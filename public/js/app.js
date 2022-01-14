@@ -1964,7 +1964,8 @@ var myDropzone = new Dropzone("#dropzone", {
     //console.log(file.previewElement.querySelector("img").src)
     console.log("uploaded: " + response.number_of_images_uploaded);
     console.log(response);
-    console.log(696666);
+    console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()('input[name="compression"]:checked').val());
+    console.log(file.previewElement.querySelector("img").src);
     stuff[file.upload.uuid] = response.changed_name;
     console.log(stuff);
     console.log("happening");

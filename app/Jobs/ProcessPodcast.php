@@ -42,9 +42,18 @@ class ProcessPodcast implements ShouldQueue
             "base_path" => public_path(),
         ));
 
+        if($size==0){
+            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy);
+        }
+        if($size==1){
+            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = 1200, $height = 1200, $maxDimension = true);
+        }
+        if($size==3){
+            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = $resize_width, $height = $resize_height);
+        }
 
 
-        $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = 2, $maxDimension = true);
+      //  $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = 2, $width = 200, $height = 200, $maxDimension = true);
         $p = Project::where ('folder',$folder_name)->get();
         Project::find( $p[0]->id)->update([
             'status'=>true

@@ -38,7 +38,8 @@ var myDropzone = new Dropzone("#dropzone", {
         //console.log(file.previewElement.querySelector("img").src)
         console.log("uploaded: "+response.number_of_images_uploaded);
         console.log(response);
-        console.log(696666);
+        console.log($('input[name="compression"]:checked').val());
+        console.log( file.previewElement.querySelector("img").src);
         stuff[file.upload.uuid] = response.changed_name;
         console.log(stuff);
         console.log("happening");
@@ -400,3 +401,4 @@ var minifyImg = function(dataUrl,newWidth,imageType="image/jpeg",resolve,imageAr
         //
     });
 };
+
