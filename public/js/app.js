@@ -1964,7 +1964,6 @@ var myDropzone = new Dropzone("#dropzone", {
     //console.log(file.previewElement.querySelector("img").src)
     console.log("uploaded: " + response.number_of_images_uploaded);
     console.log(response);
-    console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()('input[name="compression"]:checked').val());
     console.log(file.previewElement.querySelector("img").src);
     stuff[file.upload.uuid] = response.changed_name;
     console.log(stuff);
@@ -2223,6 +2222,14 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.dz-download-
 });
 var estimate_time = 50;
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.start-upload', function () {
+  var all = jquery__WEBPACK_IMPORTED_MODULE_1___default()(".dz-image").map(function () {
+    if (jquery__WEBPACK_IMPORTED_MODULE_1___default()('input[name="shortpixel"]:checked').val()) {
+      console.log('checked');
+      console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).children('img')[0].src);
+    } else {
+      console.log('not checked');
+    }
+  }).get();
   progressBar(jquery__WEBPACK_IMPORTED_MODULE_1___default()("#folder_id").val());
   var numItems = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.dz-image-preview').length;
   console.log(numItems);
@@ -2239,7 +2246,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.start-upload
 
   jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
     type: 'POST',
-    url: 'start-compress',
+    url: 'staart-compress',
     data: {
       _token: jquery__WEBPACK_IMPORTED_MODULE_1___default()('[name="_token"]').val(),
       compression: compression,

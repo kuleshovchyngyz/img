@@ -747,3 +747,8 @@ input {
         margin-left: auto;
     }
 }
+
+.method-selection{
+    width: 56px !important;
+    height: 28px;
+}

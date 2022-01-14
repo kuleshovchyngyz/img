@@ -757,6 +757,10 @@ input {
     }
 }
 
+.method-selection{
+    width: 56px !important;
+    height: 28px;
+}
 @charset "UTF-8";
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)

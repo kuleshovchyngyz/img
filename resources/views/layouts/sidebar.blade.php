@@ -1,4 +1,15 @@
 <div class="side-bar" id="side-bar">
+    <br>
+    <div class="ml-3 ">
+        <label class="side-bar__label d-flex">
+            <input type="checkbox" class="side-bar__input" name="shortpixel" value="1">
+            <span class="side-bar__li-info">
+                            <span>Shortpixel</span>
+                <span class="side-bar__li-mintext">Рекомендуется</span>
+                        </span>
+        </label>
+
+    </div>
     <h3 class="side-bar__title">Указать степень сжатия</h3>
     <ul class="side-bar__ul">
         <li class="side-bar__li s-between">

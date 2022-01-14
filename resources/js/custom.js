@@ -38,7 +38,7 @@ var myDropzone = new Dropzone("#dropzone", {
         //console.log(file.previewElement.querySelector("img").src)
         console.log("uploaded: "+response.number_of_images_uploaded);
         console.log(response);
-        console.log($('input[name="compression"]:checked').val());
+
         console.log( file.previewElement.querySelector("img").src);
         stuff[file.upload.uuid] = response.changed_name;
         console.log(stuff);
@@ -225,6 +225,17 @@ $('body').on('click', '.dz-download-one', function () {
 });
 let estimate_time = 50;
 $('body').on('click', '.start-upload', function () {
+    var all = $(".dz-image").map(function() {
+        if($('input[name="shortpixel"]:checked').val()){
+            console.log('checked');
+            console.log($(this).children('img')[0].src)
+
+        }else{
+            console.log('not checked')
+        }
+
+
+    }).get();
     progressBar($("#folder_id").val());
     var numItems = $('.dz-image-preview').length;
     console.log(numItems);
@@ -239,7 +250,7 @@ $('body').on('click', '.start-upload', function () {
     }
     $.ajax({
         type: 'POST',
-        url: 'start-compress',
+        url: 'staart-compress',
         data: {
             _token: $('[name="_token"]').val(),
             compression: compression,
