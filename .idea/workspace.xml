@@ -6,13 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="5dd5138f-184b-487d-9a2f-dfd15cacf2c1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Jobs/ProcessPodcast.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Jobs/ProcessPodcast.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/css/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/public/css/app.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/DropZoneController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/DropZoneController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/js/custom.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/js/custom.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/sass/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/resources/sass/style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/app.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/views/layouts/content.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/content.blade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/views/layouts/sidebar.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/sidebar.blade.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/web.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/web.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,7 +166,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../testImage" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../image" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -214,7 +213,8 @@
       <workItem from="1641898261717" duration="4138000" />
       <workItem from="1641967956794" duration="12521000" />
       <workItem from="1642050836639" duration="14471000" />
-      <workItem from="1642138875392" duration="22086000" />
+      <workItem from="1642138875392" duration="22388000" />
+      <workItem from="1642400206729" duration="22823000" />
     </task>
     <servers />
   </component>

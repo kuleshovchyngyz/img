@@ -1953,40 +1953,72 @@ var stuff = [];
 Dropzone.options.myDropzone = {
   maxFilesize: 500
 };
+
+function fileType(filename) {
+  var extn = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+  var img_type = 'image/jpeg';
+
+  switch (extn) {
+    case 'gif':
+      img_type = 'image/gif';
+      break;
+
+    case 'png':
+      img_type = 'image/png';
+      break;
+
+    case 'jpg':
+    case 'jpeg':
+    default:
+      img_type = 'image/jpeg';
+      break;
+  }
+
+  return img_type;
+}
+
 var myDropzone = new Dropzone("#dropzone", {
-  maxFilesize: 1000,
+  maxFilesize: 10000,
   maxFiles: 50,
   thumbnailWidth: 350,
   thumbnailHeight: 350,
   acceptedFiles: ".jpeg,.jpg,.png,",
   addRemoveLinks: true,
   success: function success(file, response) {
-    //console.log(file.previewElement.querySelector("img").src)
-    console.log("uploaded: " + response.number_of_images_uploaded);
-    console.log(response);
-    console.log(file.previewElement.querySelector("img").src);
+    var reader = new FileReader();
+
+    reader.onload = function (event) {
+      //console.log(event.target.result);
+      jquery__WEBPACK_IMPORTED_MODULE_1___default()('.ibase64').append("<input type='hidden' id='".concat(file.name, "' class='base64' value=").concat(event.target.result, ">"));
+
+      if (!file.previewElement.querySelector("img").src) {
+        minifyImg(event.target.result, 350, 350, null, fileType(file.name), function (data) {
+          file.previewElement.querySelector("img").src = data;
+        });
+        console.log('empty');
+      } // check_process(folder).then( v => {
+      //     current_progress = v;
+      // });
+
+    };
+
+    reader.readAsDataURL(file);
     stuff[file.upload.uuid] = response.changed_name;
-    console.log(stuff);
-    console.log("happening");
     console.log("total: " + myDropzone.files.length);
+    console.log("uploaded: " + response.number_of_images_uploaded);
 
     if (response.number_of_images_uploaded == myDropzone.files.length) {
       jquery__WEBPACK_IMPORTED_MODULE_1___default()('.start-upload').removeClass('disable');
     }
   },
-  complete: function complete(file) {
-    console.log();
-    console.log("done");
+  complete: function complete(file) {//
   },
   removedfile: function removedfile(file) {
     var numItems = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.dz-image-preview').length;
-    console.log(numItems);
 
-    if (numItems <= 1) {
-      location.reload();
+    if (numItems <= 1) {// location.reload();
     }
 
-    console.log(stuff[file.upload.uuid]);
     var uuid = file.upload.uuid;
     var folder_id = jquery__WEBPACK_IMPORTED_MODULE_1___default()("#folder_id").val();
     jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
@@ -1998,15 +2030,9 @@ var myDropzone = new Dropzone("#dropzone", {
         folder_id: folder_id,
         request: 'delete'
       },
-      sucess: function sucess(data) {
-        console.log(data);
-      }
-    }).done(function (data) {
-      //console.log("updated");
-      console.log(data);
-    }).fail(function (data) {
-      console.log(data);
-    });
+      sucess: function sucess(data) {}
+    }).done(function (data) {//
+    }).fail(function (data) {});
     count = myDropzone.files.length;
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('.main__top-text').html("\u0417\u0430\u0433\u0440\u0443\u0436\u0435\u043D\u043E ".concat(count, " ").concat(num_img(count, ['изображение', 'изображения', 'Изображений']), " \u0438\u0437 50"));
 
@@ -2030,12 +2056,10 @@ var myDropzone = new Dropzone("#dropzone", {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').removeClass('mob-height');
     calcHeight();
   }
-}); //console.log(myDropzone)
+}); //
 
 function progressBar(folder) {
-  console.log("inside progress bar22");
   var numItems = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.dz-image-preview').length;
-  console.log(numItems);
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('.main__progress-wrap').toggleClass('start');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('.start-upload').toggleClass('disable');
   calcHeight();
@@ -2043,11 +2067,9 @@ function progressBar(folder) {
   var clearTimeoutid = setTimeout(frame, 2000);
 
   function frame() {
-    console.log('working');
     check_process(folder).then(function (v) {
       current_progress = v;
     });
-    console.log(current_progress);
 
     if (parseFloat(current_progress) > 99) {
       console.log("inside if");
@@ -2092,12 +2114,12 @@ function _check_process() {
   return _check_process.apply(this, arguments);
 }
 
-function post_sizes(_x2) {
-  return _post_sizes.apply(this, arguments);
+function uploadTiny(_x2) {
+  return _uploadTiny.apply(this, arguments);
 }
 
-function _post_sizes() {
-  _post_sizes = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(folder) {
+function _uploadTiny() {
+  _uploadTiny = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2(data) {
     var result;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
       while (1) {
@@ -2105,8 +2127,12 @@ function _post_sizes() {
           case 0:
             _context2.next = 2;
             return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
-              type: 'GET',
-              url: "shortpixel-file/".concat(folder)
+              type: 'POST',
+              url: 'upload-tiny',
+              data: data,
+              sucess: function sucess(data) {
+                console.log(data);
+              }
             });
 
           case 2:
@@ -2120,15 +2146,15 @@ function _post_sizes() {
       }
     }, _callee2);
   }));
+  return _uploadTiny.apply(this, arguments);
+}
+
+function post_sizes(_x3) {
   return _post_sizes.apply(this, arguments);
 }
 
-function get_image_sizes(_x3) {
-  return _get_image_sizes.apply(this, arguments);
-}
-
-function _get_image_sizes() {
-  _get_image_sizes = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(folder) {
+function _post_sizes() {
+  _post_sizes = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(folder) {
     var result;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
       while (1) {
@@ -2137,7 +2163,7 @@ function _get_image_sizes() {
             _context3.next = 2;
             return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
               type: 'GET',
-              url: "get-image-sizes/".concat(folder)
+              url: "shortpixel-file/".concat(folder)
             });
 
           case 2:
@@ -2151,15 +2177,15 @@ function _get_image_sizes() {
       }
     }, _callee3);
   }));
+  return _post_sizes.apply(this, arguments);
+}
+
+function get_image_sizes(_x4) {
   return _get_image_sizes.apply(this, arguments);
 }
 
-function get_image_sizes_after_compressed(_x4) {
-  return _get_image_sizes_after_compressed.apply(this, arguments);
-}
-
-function _get_image_sizes_after_compressed() {
-  _get_image_sizes_after_compressed = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(folder) {
+function _get_image_sizes() {
+  _get_image_sizes = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(folder) {
     var result;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
       while (1) {
@@ -2168,7 +2194,7 @@ function _get_image_sizes_after_compressed() {
             _context4.next = 2;
             return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
               type: 'GET',
-              url: "get-image-sizes-after-compressed/".concat(folder)
+              url: "get-image-sizes/".concat(folder)
             });
 
           case 2:
@@ -2182,6 +2208,37 @@ function _get_image_sizes_after_compressed() {
       }
     }, _callee4);
   }));
+  return _get_image_sizes.apply(this, arguments);
+}
+
+function get_image_sizes_after_compressed(_x5) {
+  return _get_image_sizes_after_compressed.apply(this, arguments);
+}
+
+function _get_image_sizes_after_compressed() {
+  _get_image_sizes_after_compressed = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(folder) {
+    var result;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            _context5.next = 2;
+            return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
+              type: 'GET',
+              url: "get-image-sizes-after-compressed/".concat(folder)
+            });
+
+          case 2:
+            result = _context5.sent;
+            return _context5.abrupt("return", result);
+
+          case 4:
+          case "end":
+            return _context5.stop();
+        }
+      }
+    }, _callee5);
+  }));
   return _get_image_sizes_after_compressed.apply(this, arguments);
 }
 
@@ -2189,7 +2246,6 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.dz-download-
   var r = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().find('.dz-filename').text();
   var folder_id = jquery__WEBPACK_IMPORTED_MODULE_1___default()("#folder_id").val();
   var frm_url = 'https://google.com';
-  console.log(r);
   var getUrl = window.location;
   var baseUrl = getUrl.protocol + "//" + getUrl.host + "/dz-download-one";
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#frm111').remove();
@@ -2198,41 +2254,22 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.dz-download-
   setTimeout(function () {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('#frm111')[0].submit();
   }, 10);
-  /*
-  $.ajax({
-      type: 'get',
-      url: 'dz-download-one',
-      data: {
-          _token: $('[name="_token"]').val(),
-          folder_id:folder_id,
-          image:r
-      },
-      sucess: function (data) {
-          console.log( data);
-        }
-  })
-      .done(function (data) {
-          //console.log("updated");
-          console.log(data);
-       })
-      .fail(function (data) {
-          console.log(data);
-      });
-  */
+  jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
+    type: 'get',
+    url: 'dz-download-one',
+    data: {
+      _token: jquery__WEBPACK_IMPORTED_MODULE_1___default()('[name="_token"]').val(),
+      folder_id: folder_id,
+      image: r
+    },
+    sucess: function sucess(data) {}
+  }).done(function (data) {//
+  }).fail(function (data) {});
 });
 var estimate_time = 50;
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.start-upload', function () {
-  var all = jquery__WEBPACK_IMPORTED_MODULE_1___default()(".dz-image").map(function () {
-    if (jquery__WEBPACK_IMPORTED_MODULE_1___default()('input[name="shortpixel"]:checked').val()) {
-      console.log('checked');
-      console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).children('img')[0].src);
-    } else {
-      console.log('not checked');
-    }
-  }).get();
   progressBar(jquery__WEBPACK_IMPORTED_MODULE_1___default()("#folder_id").val());
   var numItems = jquery__WEBPACK_IMPORTED_MODULE_1___default()('.dz-image-preview').length;
-  console.log(numItems);
   var compression = jquery__WEBPACK_IMPORTED_MODULE_1___default()("input[name='compression']:checked").val();
   var size = jquery__WEBPACK_IMPORTED_MODULE_1___default()("input[name='size']:checked").val();
   var width = 0;
@@ -2244,37 +2281,95 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.start-upload
     height = jquery__WEBPACK_IMPORTED_MODULE_1___default()("#height").val();
   }
 
+  var data = {
+    _token: jquery__WEBPACK_IMPORTED_MODULE_1___default()('[name="_token"]').val(),
+    compression: compression,
+    size: size,
+    request: 'start-compression',
+    width: width,
+    height: height,
+    folder_id: folder_id
+  };
+
+  if (jquery__WEBPACK_IMPORTED_MODULE_1___default()('#shortpixel').is(':checked')) {
+    startCompress(data);
+  } else {
+    localCompress(data);
+  }
+});
+
+function localCompress(config) {
+  var all = jquery__WEBPACK_IMPORTED_MODULE_1___default()(".base64").map(function () {
+    var name = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id');
+    console.log('name:');
+    console.log(fileType(name)); // console.log( config)
+
+    var width = 1200;
+    var width = 1200;
+    var i = new Image();
+
+    i.onload = function () {
+      width = i.width;
+      var height = i.height;
+      var quality = 0.85;
+
+      if (config.compression == 0) {
+        quality = 0.9;
+      }
+
+      if (config.compression == 2) {
+        quality = 0.80;
+      }
+
+      if (config.compression == 1) {
+        quality = 0.70;
+      }
+
+      console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id'));
+
+      if (config.size == 0) {
+        minifyImg(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).val(), width, height, null, fileType(name), function (data) {
+          uploadTiny(config);
+        }, quality);
+      }
+
+      if (config.size == 1) {
+        minifyImg(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).val(), width, height, 1200, fileType(name), function (data) {
+          uploadTiny(config);
+        }, quality);
+      }
+
+      if (config.size == 'random') {
+        width = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#width').val();
+        height = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#height').val();
+        minifyImg(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).val(), width, height, null, fileType(name), function (data) {
+          uploadTiny(config);
+        }, quality);
+      }
+    };
+
+    i.src = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).val();
+  }).get();
+}
+
+function startCompress(data) {
   jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
     type: 'POST',
-    url: 'staart-compress',
-    data: {
-      _token: jquery__WEBPACK_IMPORTED_MODULE_1___default()('[name="_token"]').val(),
-      compression: compression,
-      size: size,
-      request: 'start-compression',
-      width: width,
-      height: height,
-      folder_id: folder_id
-    },
-    sucess: function sucess(data) {
-      console.log(data);
-    }
-  }).done(function (data) {
-    //console.log("updated");
-    console.log(data);
-  }).fail(function (data) {
-    console.log(data);
-  });
-}); // $(".downLoadAll").on('click', function(event){
+    url: 'start-compress',
+    data: data,
+    sucess: function sucess(data) {}
+  }).done(function (data) {//
+  }).fail(function (data) {});
+} // $(".downLoadAll").on('click', function(event){
 // });
 // get_image_sizes_after_compressed('60e423e3c94de').then(data => {
-//     console.log((data['new_size_sum']/1024/1024).toPrecision(2));
-//     console.log(data);
+//     ;
+//
 //
 // });
 
+
 function someafter() {
-  console.log("inside some");
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('.main__footer-text').html('Идёт сжатие');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('.main__footer .btn').html('Сжатие...');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('.main__footer .btn').toggleClass('disable');
@@ -2295,9 +2390,7 @@ function someafter() {
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('.main__footer .btn').removeClass('disable');
   jquery__WEBPACK_IMPORTED_MODULE_1___default()(".main__progress-line").css("width", "0");
   get_image_sizes(folder_id).then(function (data) {
-    console.log(data);
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('div.dz-details').each(function (index, obj) {
-      console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()(obj).find('.dz-filename span').text());
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(obj).prepend("<div class=\"dz-image-info-per\">".concat(data[jquery__WEBPACK_IMPORTED_MODULE_1___default()(obj).find('.dz-filename span').text()]['percent'], "%</div>"));
       jquery__WEBPACK_IMPORTED_MODULE_1___default()(obj).append("<div class=\"dz-image-new-size\">".concat((data[jquery__WEBPACK_IMPORTED_MODULE_1___default()(obj).find('.dz-filename span').text()]['new_size'] / 1024 / 1024).toPrecision(2), "MB</div>"));
     });
@@ -2316,7 +2409,6 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.downLoadAll'
   calcHeight();
   var getUrl = window.location;
   var baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
-  console.log(baseUrl);
   var folder_id = jquery__WEBPACK_IMPORTED_MODULE_1___default()("#folder_id").val();
   window.location.href = baseUrl + '/' + folder_id;
   setTimeout(function () {
@@ -2347,34 +2439,48 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('input[name="size"]').on('change',
   }
 });
 
-var minifyImg = function minifyImg(dataUrl, newWidth) {
-  var imageType = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : "image/jpeg";
-  var resolve = arguments.length > 3 ? arguments[3] : undefined;
-  var imageArguments = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0.85;
-  var image, oldWidth, oldHeight, newHeight, canvas, ctx, newDataUrl;
+var minifyImg = function minifyImg(dataUrl) {
+  var newWidth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  var newHeight = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+  var def = arguments.length > 3 ? arguments[3] : undefined;
+  var imageType = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : "image/jpeg";
+  var resolve = arguments.length > 5 ? arguments[5] : undefined;
+  var imageArguments = arguments.length > 6 && arguments[6] !== undefined ? arguments[6] : 0.85;
+  var image, oldWidth, oldHeight, canvas, ctx, newDataUrl;
   new Promise(function (resolve) {
     image = new Image();
-    image.src = dataUrl;
-    console.log('dataUrl:'); //
+    image.src = dataUrl; //
 
     setTimeout(function () {
       resolve('Done : ');
     }, 1000);
   }).then(function (d) {
     oldWidth = image.width;
-    oldHeight = image.height; //console.log([oldWidth,oldHeight]);
+    oldHeight = image.height;
 
-    newHeight = Math.floor(oldHeight / oldWidth * newWidth); //console.log(d+' '+newHeight);
+    if (def !== null) {
+      if (newHeight > newWidth || newHeight == newWidth) {
+        newHeight = def;
+        newWidth = null;
+      }
 
+      if (newHeight < newWidth) {
+        newWidth = def;
+        newHeight = null;
+      }
+    }
+
+    if (newHeight === null) newHeight = Math.floor(oldHeight / oldWidth * newWidth);
+    if (newWidth === null) newWidth = Math.floor(oldWidth / oldHeight * newHeight);
     canvas = document.createElement("canvas");
     canvas.width = newWidth;
-    canvas.height = newHeight; //console.log(canvas);
+    canvas.height = newHeight; //
 
     ctx = canvas.getContext("2d");
-    ctx.drawImage(image, 0, 0, newWidth, newHeight); // console.log(ctx);
+    ctx.drawImage(image, 0, 0, newWidth, newHeight); // 
 
     newDataUrl = canvas.toDataURL(imageType, imageArguments);
-    resolve(newDataUrl); // console.log(newDataUrl);
+    resolve(newDataUrl); // 
     //
   });
 };

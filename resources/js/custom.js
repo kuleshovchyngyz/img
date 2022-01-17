@@ -1,3 +1,4 @@
+
 import $ from "jquery";
 
 
@@ -26,41 +27,77 @@ var stuff = [];
 Dropzone.options.myDropzone = {
     maxFilesize: 500,
 }
+function fileType(filename){
+
+    var extn = filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
+    var img_type = 'image/jpeg';
+    switch(extn) {
+        case 'gif':
+            img_type = 'image/gif';
+            break;
+        case 'png':
+            img_type = 'image/png';
+            break;
+        case 'jpg':
+        case 'jpeg':
+        default:
+            img_type = 'image/jpeg';
+            break;
+    }
+    return img_type;
+}
+
 var myDropzone = new Dropzone("#dropzone", {
 
-    maxFilesize: 1000,
+    maxFilesize: 10000,
     maxFiles: 50,
     thumbnailWidth: 350,
     thumbnailHeight: 350,
     acceptedFiles: ".jpeg,.jpg,.png,",
     addRemoveLinks: true,
-    success: function(file, response) {
-        //console.log(file.previewElement.querySelector("img").src)
-        console.log("uploaded: "+response.number_of_images_uploaded);
-        console.log(response);
 
-        console.log( file.previewElement.querySelector("img").src);
+    success: function(file, response) {
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            //console.log(event.target.result);
+            $('.ibase64').append(`<input type='hidden' id='${file.name}' class='base64' value=${event.target.result}>`);
+            if(!file.previewElement.querySelector("img").src){
+
+                minifyImg(event.target.result, 350,350,null, fileType(file.name), (data)=> {
+                    file.previewElement.querySelector("img").src = data;
+                });
+                console.log('empty')
+            }
+            // check_process(folder).then( v => {
+            //     current_progress = v;
+            // });
+        };
+
+        reader.readAsDataURL(file);
+
         stuff[file.upload.uuid] = response.changed_name;
-        console.log(stuff);
-        console.log("happening");
+
+
         console.log("total: "+myDropzone.files.length);
+        console.log("uploaded: "+response.number_of_images_uploaded);
         if(response.number_of_images_uploaded == myDropzone.files.length){
             $('.start-upload').removeClass('disable');
         }
 
     },
     complete: function(file) {
-        console.log();
-        console.log("done");
+        //
+
 
     },
     removedfile: function (file) {
         var numItems = $('.dz-image-preview').length;
-        console.log(numItems);
+
         if(numItems<=1){
-            location.reload();
+            // location.reload();
         }
-        console.log(stuff[file.upload.uuid]);
+
         var uuid = file.upload.uuid;
         var folder_id = $("#folder_id").val();
         $.ajax({
@@ -73,18 +110,18 @@ var myDropzone = new Dropzone("#dropzone", {
                 request: 'delete'
             },
             sucess: function (data) {
-                console.log( data);
+
 
 
             }
         })
             .done(function (data) {
-                //console.log("updated");
-                console.log(data);
+                //
+
 
             })
             .fail(function (data) {
-                console.log(data);
+
             });
         count = myDropzone.files.length;
         $('.main__top-text').html(`Загружено ${count} ${num_img(count, ['изображение', 'изображения',
@@ -117,22 +154,24 @@ var myDropzone = new Dropzone("#dropzone", {
 
 
 
-//console.log(myDropzone)
+//
 function progressBar(folder) {
-    console.log("inside progress bar22");
+
     var numItems = $('.dz-image-preview').length;
-    console.log(numItems);
+
     $('.main__progress-wrap').toggleClass('start');
     $('.start-upload').toggleClass('disable');
     calcHeight();
     var current_progress = 0;
     let clearTimeoutid = setTimeout(frame  , 2000);
     function frame() {
-        console.log('working')
+
         check_process(folder).then( v => {
             current_progress = v;
         });
-        console.log(current_progress)
+
+
+
         if (parseFloat(current_progress) > 99) {
             console.log("inside if")
             clearTimeout(clearTimeoutid);
@@ -154,10 +193,24 @@ async function check_process(folder){
 
     const result = await $.ajax({
         type: 'GET',
-        url: `check-progress/${folder}`
+        url: `check-progress/${folder}`,
 
     })
     return result;
+}
+
+async function uploadTiny(data){
+    const result = await $.ajax({
+        type: 'POST',
+        url: 'upload-tiny',
+        data: data,
+        sucess: function (data) {
+            console.log(data);
+        }
+
+    })
+    return result;
+
 }
 async function post_sizes(folder){
     const result = await $.ajax({
@@ -169,7 +222,7 @@ async function post_sizes(folder){
 async function get_image_sizes(folder){
     const result = await $.ajax({
         type: 'GET',
-        url: `get-image-sizes/${folder}`
+        url:`get-image-sizes/${folder}`
     })
     return result;
 }
@@ -187,7 +240,7 @@ $('body').on('click', '.dz-download-one', function () {
     var folder_id = $("#folder_id").val();
     let frm_url = 'https://google.com';
 
-    console.log(r);
+
 
     var getUrl = window.location;
     var baseUrl = getUrl .protocol + "//" + getUrl.host + "/dz-download-one";
@@ -198,7 +251,7 @@ $('body').on('click', '.dz-download-one', function () {
         $('#frm111')[0].submit();
     }, 10);
 
-    /*
+
     $.ajax({
         type: 'get',
         url: 'dz-download-one',
@@ -208,92 +261,130 @@ $('body').on('click', '.dz-download-one', function () {
             image:r
         },
         sucess: function (data) {
-            console.log( data);
+
 
 
         }
     })
         .done(function (data) {
-            //console.log("updated");
-            console.log(data);
+            //
+
 
         })
         .fail(function (data) {
-            console.log(data);
+
         });
-*/
+
 });
 let estimate_time = 50;
 $('body').on('click', '.start-upload', function () {
-    var all = $(".dz-image").map(function() {
-        if($('input[name="shortpixel"]:checked').val()){
-            console.log('checked');
-            console.log($(this).children('img')[0].src)
 
-        }else{
-            console.log('not checked')
-        }
-
-
-    }).get();
     progressBar($("#folder_id").val());
     var numItems = $('.dz-image-preview').length;
-    console.log(numItems);
+
     var compression = $("input[name='compression']:checked").val();
     var size = $("input[name='size']:checked").val();
     var width = 0;
     var height = 0;
     var folder_id = $("#folder_id").val();
     if(size=='random'){
-       width = $("#width").val();
+        width = $("#width").val();
         height = $("#height").val();
     }
+    let data =   {
+        _token: $('[name="_token"]').val(),
+        compression: compression,
+        size:size,
+        request: 'start-compression',
+        width:width,
+        height:height,
+        folder_id:folder_id
+
+    };
+    if($('#shortpixel').is(':checked')){
+        startCompress(data);
+    }else{
+        localCompress(data);
+     }
+
+})
+function localCompress(config){
+    var all = $(".base64").map(function() {
+        var name = $(this).attr('id');
+        console.log('name:')
+        console.log(fileType(name))
+       // console.log( config)
+        var width = 1200;
+        var width = 1200;
+        var i = new Image();
+        i.onload = function(){
+            width = i.width;
+            let height = i.height;
+
+            var quality = 0.85;
+            if(config.compression==0){
+                quality = 0.9;
+            }
+            if(config.compression==2){
+                quality = 0.80;
+            }
+            if(config.compression==1){
+                quality = 0.70;
+            }
+            console.log(($(this).attr('id')))
+            if(config.size==0){
+                minifyImg($(this).val(), width,height, null,fileType(name), (data)=> {
+                    uploadTiny(config);
+                },quality);
+            }
+            if(config.size==1){
+                minifyImg($(this).val(), width,height, 1200,fileType(name) ,(data)=> {
+                    uploadTiny(config);
+                },quality);
+            }
+            if(config.size=='random'){
+
+                width = $('#width').val();
+                height = $('#height').val();
+                minifyImg($(this).val(), width,height, null,fileType(name), (data)=> {
+                    uploadTiny(config);
+                },quality);
+            }
+        };
+        i.src = $(this).val();
+    }).get();
+}
+function startCompress(data){
     $.ajax({
         type: 'POST',
-        url: 'staart-compress',
-        data: {
-            _token: $('[name="_token"]').val(),
-            compression: compression,
-            size:size,
-            request: 'start-compression',
-            width:width,
-            height:height,
-            folder_id:folder_id
-
-        },
+        url: 'start-compress',
+        data: data,
         sucess: function (data) {
-            console.log( data);
+
 
         }
     })
         .done(function (data) {
-            //console.log("updated");
-            console.log(data);
-
+            //
 
 
         })
         .fail(function (data) {
-            console.log(data);
+
         });
-
-
-
-
-
-
-})
-
+}
 // $(".downLoadAll").on('click', function(event){
 
 // });
 // get_image_sizes_after_compressed('60e423e3c94de').then(data => {
-//     console.log((data['new_size_sum']/1024/1024).toPrecision(2));
-//     console.log(data);
+//     ;
+//
 //
 // });
 function someafter(){
-    console.log("inside some");
+
+
+
     $('.main__footer-text').html('Идёт сжатие');
     $('.main__footer .btn').html('Сжатие...');
     $('.main__footer .btn').toggleClass('disable');
@@ -307,30 +398,30 @@ function someafter(){
     $('.show-sidebar').text('Настроить сжатие');
     calcHeight();
     var folder_id = $("#folder_id").val();
-        $('.main__progress-wrap').removeClass('start');
+    $('.main__progress-wrap').removeClass('start');
     get_image_sizes_after_compressed(folder_id).then(data => {
 
-    $('.main__footer-text').html(`Всего ${(data['new_size_sum']/1024/1024).toPrecision(2)} Мб (${count} изображения)`);
-    $('.main__footer-progress').html(`Сжатие ${data['percentage']}%`);
+        $('.main__footer-text').html(`Всего ${(data['new_size_sum']/1024/1024).toPrecision(2)} Мб (${count} изображения)`);
+        $('.main__footer-progress').html(`Сжатие ${data['percentage']}%`);
     });
-        $('.main__footer .btn').removeClass('disable');
-        $(".main__progress-line").css("width", "0");
+    $('.main__footer .btn').removeClass('disable');
+    $(".main__progress-line").css("width", "0");
 
-        get_image_sizes(folder_id).then(data => {
+    get_image_sizes(folder_id).then(data => {
 
-            console.log(data);
-                $('div.dz-details').each(function( index , obj) {
-                    console.log($(obj).find('.dz-filename span').text());
-                        $(obj).prepend(`<div class="dz-image-info-per">${data[$(obj).find('.dz-filename span').text()]['percent']}%</div>`);
-                        $(obj).append(`<div class="dz-image-new-size">${(data[$(obj).find('.dz-filename span').text()]['new_size']/1024/1024).toPrecision(2)}MB</div>`);
 
-            });
+        $('div.dz-details').each(function( index , obj) {
+
+            $(obj).prepend(`<div class="dz-image-info-per">${data[$(obj).find('.dz-filename span').text()]['percent']}%</div>`);
+            $(obj).append(`<div class="dz-image-new-size">${(data[$(obj).find('.dz-filename span').text()]['new_size']/1024/1024).toPrecision(2)}MB</div>`);
 
         });
-        $('.dz-details').toggleClass('active');
-        $('.start-upload').removeClass('disable start-upload').toggleClass('downLoadAll').html(
-            'Скачать все');
-        calcHeight();
+
+    });
+    $('.dz-details').toggleClass('active');
+    $('.start-upload').removeClass('disable start-upload').toggleClass('downLoadAll').html(
+        'Скачать все');
+    calcHeight();
 
 }
 
@@ -348,7 +439,7 @@ $('body').on('click', '.downLoadAll', function () {
     calcHeight();
     var getUrl = window.location;
     var baseUrl = getUrl .protocol + "//" + getUrl.host + "/" + getUrl.pathname.split('/')[1];
-    console.log(baseUrl);
+
     var folder_id = $("#folder_id").val();
     window.location.href = baseUrl+'/'+folder_id;
     setTimeout(function () {
@@ -382,11 +473,11 @@ $('input[name="size"]').on('change', function () {
 })
 
 
-var minifyImg = function(dataUrl,newWidth,imageType="image/jpeg",resolve,imageArguments=0.85){
+var minifyImg = function(dataUrl,newWidth=null,newHeight=null,def,imageType="image/jpeg",resolve,imageArguments=0.85){
     var image, oldWidth, oldHeight, newHeight, canvas, ctx, newDataUrl;
     (new Promise(function(resolve){
         image = new Image(); image.src = dataUrl;
-        console.log('dataUrl:')
+
 
         //
         setTimeout(() => {
@@ -395,21 +486,30 @@ var minifyImg = function(dataUrl,newWidth,imageType="image/jpeg",resolve,imageAr
 
     })).then((d)=>{
         oldWidth = image.width; oldHeight = image.height;
-        //console.log([oldWidth,oldHeight]);
-        newHeight = Math.floor(oldHeight / oldWidth * newWidth);
-        //console.log(d+' '+newHeight);
+        if(def!==null){
+            if(newHeight>newWidth||newHeight==newWidth){
+                newHeight = def;
+                newWidth=null;
+            }
+            if(newHeight<newWidth){
+                newWidth = def;
+                newHeight = null;
+            }
+        }
+        if(newHeight===null)newHeight = Math.floor(oldHeight / oldWidth * newWidth);
+        if(newWidth===null)newWidth = Math.floor(oldWidth / oldHeight * newHeight);
+
 
         canvas = document.createElement("canvas");
         canvas.width = newWidth; canvas.height = newHeight;
-        //console.log(canvas);
+        //
         ctx = canvas.getContext("2d");
         ctx.drawImage(image, 0, 0, newWidth, newHeight);
-        // console.log(ctx);
+        // 
 
         newDataUrl = canvas.toDataURL(imageType, imageArguments);
         resolve(newDataUrl);
-        // console.log(newDataUrl);
+        // 
         //
     });
 };
-

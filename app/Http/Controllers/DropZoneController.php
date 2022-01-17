@@ -28,6 +28,9 @@ class DropZoneController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+    public function uploadTiny(Request $request){
+        return $request->all();
+    }
     public function dropzoneCompress(Request $request)
     {
 
@@ -382,6 +385,9 @@ class DropZoneController extends Controller
             ->first();
 
         $file_path = 'shortpixel/'.$x->path.'/'.$request->name;
+        $x = Image::where('project_id',$p[0]->id)
+            ->where('name',$request->name)
+            ->delete();
         unlink($file_path);
         return "deleted";
     }

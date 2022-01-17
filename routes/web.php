@@ -42,7 +42,7 @@ Route::get('/get-image-sizes-after-compressed/{id}', [App\Http\Controllers\DropZ
 Route::get('/insert-new-sizes/{folder_id}', [App\Http\Controllers\DropZoneController::class, 'insert_new_sizes']);
 Route::get('/check-progress/{id}', [App\Http\Controllers\DropZoneController::class, 'countCompressed']);
 Route::get('/dz-download-one/{folder}/{file}', [App\Http\Controllers\DropZoneController::class, 'dz_download_one']);
-
+Route::post('/upload-tiny', [App\Http\Controllers\DropZoneController::class, 'uploadTiny']);
 
 
 

@@ -4,6 +4,9 @@
 
         <input type="text" class="main__top-input" placeholder="Название проекта">
     </div>
+        <div class="ibase64">
+
+        </div>
     <div class="relative">
         <form action="{{route('dropzone.store')}}" enctype="multipart/form-data" method="post" class="main__wrap-file d-flex dropzone dz-clickable" id="dropzone">
             @csrf

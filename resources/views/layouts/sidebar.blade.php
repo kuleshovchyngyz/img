@@ -1,15 +1,27 @@
 <div class="side-bar" id="side-bar">
     <br>
-    <div class="ml-3 ">
-        <label class="side-bar__label d-flex">
-            <input type="checkbox" class="side-bar__input" name="shortpixel" value="1">
-            <span class="side-bar__li-info">
-                            <span>Shortpixel</span>
-                <span class="side-bar__li-mintext">Рекомендуется</span>
+    <ul class="side-bar__ul">
+        <li class="side-bar__li s-between">
+            <label class="side-bar__label d-flex">
+                <input type="radio" class="side-bar__input" name="service" checked value="1">
+                <span class="side-bar__li-info">
+                            <span>local</span>
                         </span>
-        </label>
+            </label>
+            <span class="side-bar__li-mintext">Максимальное сжатие</span>
+        </li>
+        <li class="side-bar__li s-between">
+            <label class="side-bar__label d-flex">
+                <input type="radio" class="side-bar__input" id="shortpixel" name="service"  value="2">
+                <span class="side-bar__li-info">
+                            <span>Shortpixel</span>
+                            <span class="side-bar__li-mintext">Рекомендуется</span>
+                        </span>
+            </label>
+            <span class="side-bar__li-mintext">Среднее сжатие</span>
+        </li>
 
-    </div>
+    </ul>
     <h3 class="side-bar__title">Указать степень сжатия</h3>
     <ul class="side-bar__ul">
         <li class="side-bar__li s-between">
