@@ -14,8 +14,9 @@ use App\Http\Controllers\AdminController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-//Auth::routes(['register' => false,'reset' => false]);
-Auth::routes();
+
+Auth::routes(['middleware' => 'role:admin','register' => true,'reset' => true]);
+//Auth::routes();
 
 Route::get('/home', function () {
     \App\Models\User::find(3)->assignRole('admin');
@@ -54,4 +55,5 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::group(['prefix'=>'admin', 'middleware' => ['auth', 'role:admin']], function () {
     Route::get('/', [AdminController::class, 'index'])->name('admin.users');
+    Route::get('/register-user', function (){ return view('auth.register'); })->name('admin.register.user');
 });
