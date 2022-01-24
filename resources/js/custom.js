@@ -50,6 +50,8 @@ function fileType(filename){
 var myDropzone = new Dropzone("#dropzone", {
 
     maxFilesize: 10000,
+    autoProcessQueue: true,
+    parallelUploads:4,
     maxFiles: 50,
     thumbnailWidth: 350,
     thumbnailHeight: 350,
@@ -199,16 +201,42 @@ async function check_process(folder){
     return result;
 }
 
-async function uploadTiny(data){
+async function uploadTiny1(data) {
     const result = await $.ajax({
+        headers: {
+            'X-CSRF-TOKEN': data._token
+        },
+
         type: 'POST',
         url: 'upload-tiny',
         data: data,
         sucess: function (data) {
+            console.log('response:')
             console.log(data);
+        },
+        error: function (xhr, status, error) {
+            var errorMessage = xhr.status + ': ' + xhr.statusText
+            console.log(errorMessage)
+            console.log(error)
         }
 
     })
+    return result;
+}
+async function uploadTiny(data){
+    console.log("my"+data.folder_id)
+    const result = await  $.ajax({
+        url:'upload2.php',
+        type:'POST',
+        // contentType: 'application/octet-stream',
+        // processData: false,
+        data: data,
+        success:function(response){
+            //console.log(response);
+        },
+
+    });
+
     return result;
 
 }
@@ -238,42 +266,23 @@ async function get_image_sizes_after_compressed(folder){
 $('body').on('click', '.dz-download-one', function () {
     let r = $(this).parent().find('.dz-filename').text();
     var folder_id = $("#folder_id").val();
-    let frm_url = 'https://google.com';
-
-
-
+    console.log(r)
     var getUrl = window.location;
     var baseUrl = getUrl .protocol + "//" + getUrl.host + "/dz-download-one";
     $('#frm111').remove();
-    let frm = `<form target="_blank" action="${baseUrl}/${folder_id}/${r}" method="get" id="frm111"></form>`;
+    var token = $('[name="_token"]').val();
+    let frm = `<form target="_blank" action="${baseUrl}" method="post" id="frm111">
+
+            <input name="folder_id" value="${folder_id}">
+            <input name="_token" value="${token}">
+            <input name="name" value="${r}">
+    </form>`;
     $('body').append(frm);
     setTimeout(() => {
         $('#frm111')[0].submit();
     }, 10);
 
 
-    $.ajax({
-        type: 'get',
-        url: 'dz-download-one',
-        data: {
-            _token: $('[name="_token"]').val(),
-            folder_id:folder_id,
-            image:r
-        },
-        sucess: function (data) {
-
-
-
-        }
-    })
-        .done(function (data) {
-            //
-
-
-        })
-        .fail(function (data) {
-
-        });
 
 });
 let estimate_time = 50;
@@ -309,10 +318,16 @@ $('body').on('click', '.start-upload', function () {
 
 })
 function localCompress(config){
-    var all = $(".base64").map(function() {
+        var all = $(".base64").map(function() {
         var name = $(this).attr('id');
-        console.log('name:')
-        console.log(fileType(name))
+        var val = $(this).val();
+        var dataToUpload =   {
+              
+                folder_id:config.folder_id,
+                name:name
+
+            };
+
        // console.log( config)
         var width = 1200;
         var width = 1200;
@@ -331,23 +346,37 @@ function localCompress(config){
             if(config.compression==1){
                 quality = 0.70;
             }
-            console.log(($(this).attr('id')))
+            // console.log('kkkkkkkkkk')
+            // console.log(config)
+
             if(config.size==0){
-                minifyImg($(this).val(), width,height, null,fileType(name), (data)=> {
-                    uploadTiny(config);
+                minifyImg(val, width,height, null,fileType(name), (data)=> {
+
+                    uploadTiny(config).then( v => {
+
+                    });
                 },quality);
             }
             if(config.size==1){
-                minifyImg($(this).val(), width,height, 1200,fileType(name) ,(data)=> {
-                    uploadTiny(config);
+                console.log('inside 1')
+
+
+                minifyImg(val, width,height, 1200,fileType(name) ,(data)=> {
+                    dataToUpload.filedata = data;
+                    // console.log(dataToUpload);
+                    uploadTiny(dataToUpload).then( v => {
+                        console.log(v);
+                    });
                 },quality);
             }
             if(config.size=='random'){
 
                 width = $('#width').val();
                 height = $('#height').val();
-                minifyImg($(this).val(), width,height, null,fileType(name), (data)=> {
-                    uploadTiny(config);
+                minifyImg(val, width,height, null,fileType(name), (data)=> {
+                    uploadTiny(config).then( v => {
+                        console.log(v);
+                    });
                 },quality);
             }
         };
@@ -472,7 +501,7 @@ $('input[name="size"]').on('change', function () {
     }
 })
 
-
+// minifyImg($(this).val(), width,height, 1200,fileType(name) ,(data)=> {
 var minifyImg = function(dataUrl,newWidth=null,newHeight=null,def,imageType="image/jpeg",resolve,imageArguments=0.85){
     var image, oldWidth, oldHeight, newHeight, canvas, ctx, newDataUrl;
     (new Promise(function(resolve){

@@ -29,7 +29,37 @@ class DropZoneController extends Controller
      */
 
     public function uploadTiny(Request $request){
-        return $request->all();
+
+
+        $filedata = $request->filedata;
+        $path = public_path('shortpixel').'/compressed/'.$request->folder_id;
+        if (!file_exists($path)) {
+            \File::makeDirectory(public_path('shortpixel').'/compressed/'.$request->folder_id);
+            // path does not exist
+        }
+        $this->base64_to_jpeg($filedata,public_path('shortpixel').'/compressed/'.$request->folder_id.'/'.$request->name);
+        return true;
+    }
+    public function getB64Type($str) {
+        // $str should start with 'data:' (= 5 characters long!)
+        return substr($str, 5, strpos($str, ';')-5);
+    }
+    public function base64_to_jpeg($base64_string, $output_file) {
+        // open the output file for writing
+        $ifp = fopen( $output_file, 'wb' );
+
+        // split the string on commas
+        // $data[ 0 ] == "data:image/png;base64"
+        // $data[ 1 ] == <actual base64 string>
+        $data = explode( ',', $base64_string );
+
+        // we could add validation here with ensuring count( $data ) > 1
+        fwrite( $ifp, base64_decode( $data[ 1 ] ) );
+
+        // clean up the file resource
+        fclose( $ifp );
+
+        return $output_file;
     }
     public function dropzoneCompress(Request $request)
     {
@@ -55,9 +85,11 @@ class DropZoneController extends Controller
 
     }
 
-    public function dz_download_one($folder_name,$image_name)
+    public function dz_download_one(Request $request)
     {
-
+        $folder_name = $request->folder_id;
+        $image_name = $request->name;
+//        dd(1);
         $file = 'shortpixel/compressed/'.$folder_name.'/'.$image_name;
         return response()->download($file);
     }
@@ -183,6 +215,11 @@ class DropZoneController extends Controller
     {
 
         $folder_name = $request->toArray()['folder_id'];
+        $path = public_path('shortpixel').'/compressed/'.$folder_name;
+        if (!file_exists($path)) {
+            \File::makeDirectory(public_path('shortpixel').'/compressed/'.$folder_name);
+            // path does not exist
+        }
         $image = $request->file('file');
         $imageName = $image->getClientOriginalName();
         $p = Project::where('folder',$folder_name)->get();
@@ -371,6 +408,9 @@ class DropZoneController extends Controller
         $success = 0;
         foreach ($x as $file){
             if(file_exists(public_path('shortpixel/compressed/'.$folder.'/'.$file->name))){
+                $fileSize = File::size(public_path('shortpixel/compressed/'.$folder.'/'.$file->name));
+                $file->new_size = $fileSize;
+                $file->save();
                 $success++;
             }
         }
@@ -391,4 +431,5 @@ class DropZoneController extends Controller
         unlink($file_path);
         return "deleted";
     }
+    
 }

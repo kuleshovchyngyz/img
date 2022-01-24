@@ -1979,6 +1979,8 @@ function fileType(filename) {
 
 var myDropzone = new Dropzone("#dropzone", {
   maxFilesize: 10000,
+  autoProcessQueue: true,
+  parallelUploads: 4,
   maxFiles: 50,
   thumbnailWidth: 350,
   thumbnailHeight: 350,
@@ -2114,7 +2116,7 @@ function _check_process() {
   return _check_process.apply(this, arguments);
 }
 
-function uploadTiny(_x2) {
+function uploadTiny1(_x2) {
   return _uploadTiny.apply(this, arguments);
 }
 
@@ -2127,11 +2129,20 @@ function _uploadTiny() {
           case 0:
             _context2.next = 2;
             return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
+              headers: {
+                'X-CSRF-TOKEN': data._token
+              },
               type: 'POST',
               url: 'upload-tiny',
               data: data,
               sucess: function sucess(data) {
+                console.log('response:');
                 console.log(data);
+              },
+              error: function error(xhr, status, _error) {
+                var errorMessage = xhr.status + ': ' + xhr.statusText;
+                console.log(errorMessage);
+                console.log(_error);
               }
             });
 
@@ -2149,43 +2160,49 @@ function _uploadTiny() {
   return _uploadTiny.apply(this, arguments);
 }
 
-function post_sizes(_x3) {
-  return _post_sizes.apply(this, arguments);
+function uploadTiny(_x3) {
+  return _uploadTiny2.apply(this, arguments);
 }
 
-function _post_sizes() {
-  _post_sizes = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(folder) {
+function _uploadTiny2() {
+  _uploadTiny2 = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3(data) {
     var result;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            _context3.next = 2;
+            console.log("my" + data.folder_id);
+            _context3.next = 3;
             return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
-              type: 'GET',
-              url: "shortpixel-file/".concat(folder)
+              url: 'upload2.php',
+              type: 'POST',
+              // contentType: 'application/octet-stream',
+              // processData: false,
+              data: data,
+              success: function success(response) {//console.log(response);
+              }
             });
 
-          case 2:
+          case 3:
             result = _context3.sent;
             return _context3.abrupt("return", result);
 
-          case 4:
+          case 5:
           case "end":
             return _context3.stop();
         }
       }
     }, _callee3);
   }));
+  return _uploadTiny2.apply(this, arguments);
+}
+
+function post_sizes(_x4) {
   return _post_sizes.apply(this, arguments);
 }
 
-function get_image_sizes(_x4) {
-  return _get_image_sizes.apply(this, arguments);
-}
-
-function _get_image_sizes() {
-  _get_image_sizes = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(folder) {
+function _post_sizes() {
+  _post_sizes = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4(folder) {
     var result;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
       while (1) {
@@ -2194,7 +2211,7 @@ function _get_image_sizes() {
             _context4.next = 2;
             return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
               type: 'GET',
-              url: "get-image-sizes/".concat(folder)
+              url: "shortpixel-file/".concat(folder)
             });
 
           case 2:
@@ -2208,15 +2225,15 @@ function _get_image_sizes() {
       }
     }, _callee4);
   }));
+  return _post_sizes.apply(this, arguments);
+}
+
+function get_image_sizes(_x5) {
   return _get_image_sizes.apply(this, arguments);
 }
 
-function get_image_sizes_after_compressed(_x5) {
-  return _get_image_sizes_after_compressed.apply(this, arguments);
-}
-
-function _get_image_sizes_after_compressed() {
-  _get_image_sizes_after_compressed = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(folder) {
+function _get_image_sizes() {
+  _get_image_sizes = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee5(folder) {
     var result;
     return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee5$(_context5) {
       while (1) {
@@ -2225,7 +2242,7 @@ function _get_image_sizes_after_compressed() {
             _context5.next = 2;
             return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
               type: 'GET',
-              url: "get-image-sizes-after-compressed/".concat(folder)
+              url: "get-image-sizes/".concat(folder)
             });
 
           case 2:
@@ -2239,32 +2256,53 @@ function _get_image_sizes_after_compressed() {
       }
     }, _callee5);
   }));
+  return _get_image_sizes.apply(this, arguments);
+}
+
+function get_image_sizes_after_compressed(_x6) {
+  return _get_image_sizes_after_compressed.apply(this, arguments);
+}
+
+function _get_image_sizes_after_compressed() {
+  _get_image_sizes_after_compressed = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee6(folder) {
+    var result;
+    return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.next = 2;
+            return jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
+              type: 'GET',
+              url: "get-image-sizes-after-compressed/".concat(folder)
+            });
+
+          case 2:
+            result = _context6.sent;
+            return _context6.abrupt("return", result);
+
+          case 4:
+          case "end":
+            return _context6.stop();
+        }
+      }
+    }, _callee6);
+  }));
   return _get_image_sizes_after_compressed.apply(this, arguments);
 }
 
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.dz-download-one', function () {
   var r = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).parent().find('.dz-filename').text();
   var folder_id = jquery__WEBPACK_IMPORTED_MODULE_1___default()("#folder_id").val();
-  var frm_url = 'https://google.com';
+  console.log(r);
   var getUrl = window.location;
   var baseUrl = getUrl.protocol + "//" + getUrl.host + "/dz-download-one";
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('#frm111').remove();
-  var frm = "<form target=\"_blank\" action=\"".concat(baseUrl, "/").concat(folder_id, "/").concat(r, "\" method=\"get\" id=\"frm111\"></form>");
+  var token = jquery__WEBPACK_IMPORTED_MODULE_1___default()('[name="_token"]').val();
+  var frm = "<form target=\"_blank\" action=\"".concat(baseUrl, "\" method=\"post\" id=\"frm111\">\n\n            <input name=\"folder_id\" value=\"").concat(folder_id, "\">\n            <input name=\"_token\" value=\"").concat(token, "\">\n            <input name=\"name\" value=\"").concat(r, "\">\n    </form>");
   jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').append(frm);
   setTimeout(function () {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('#frm111')[0].submit();
   }, 10);
-  jquery__WEBPACK_IMPORTED_MODULE_1___default().ajax({
-    type: 'get',
-    url: 'dz-download-one',
-    data: {
-      _token: jquery__WEBPACK_IMPORTED_MODULE_1___default()('[name="_token"]').val(),
-      folder_id: folder_id,
-      image: r
-    },
-    sucess: function sucess(data) {}
-  }).done(function (data) {//
-  }).fail(function (data) {});
 });
 var estimate_time = 50;
 jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.start-upload', function () {
@@ -2301,8 +2339,11 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('body').on('click', '.start-upload
 function localCompress(config) {
   var all = jquery__WEBPACK_IMPORTED_MODULE_1___default()(".base64").map(function () {
     var name = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id');
-    console.log('name:');
-    console.log(fileType(name)); // console.log( config)
+    var val = jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).val();
+    var dataToUpload = {
+      folder_id: config.folder_id,
+      name: name
+    }; // console.log( config)
 
     var width = 1200;
     var width = 1200;
@@ -2323,27 +2364,34 @@ function localCompress(config) {
 
       if (config.compression == 1) {
         quality = 0.70;
-      }
+      } // console.log('kkkkkkkkkk')
+      // console.log(config)
 
-      console.log(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).attr('id'));
 
       if (config.size == 0) {
-        minifyImg(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).val(), width, height, null, fileType(name), function (data) {
-          uploadTiny(config);
+        minifyImg(val, width, height, null, fileType(name), function (data) {
+          uploadTiny(config).then(function (v) {});
         }, quality);
       }
 
       if (config.size == 1) {
-        minifyImg(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).val(), width, height, 1200, fileType(name), function (data) {
-          uploadTiny(config);
+        console.log('inside 1');
+        minifyImg(val, width, height, 1200, fileType(name), function (data) {
+          dataToUpload.filedata = data; // console.log(dataToUpload);
+
+          uploadTiny(dataToUpload).then(function (v) {
+            console.log(v);
+          });
         }, quality);
       }
 
       if (config.size == 'random') {
         width = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#width').val();
         height = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#height').val();
-        minifyImg(jquery__WEBPACK_IMPORTED_MODULE_1___default()(this).val(), width, height, null, fileType(name), function (data) {
-          uploadTiny(config);
+        minifyImg(val, width, height, null, fileType(name), function (data) {
+          uploadTiny(config).then(function (v) {
+            console.log(v);
+          });
         }, quality);
       }
     };
@@ -2437,7 +2485,7 @@ jquery__WEBPACK_IMPORTED_MODULE_1___default()('input[name="size"]').on('change',
   } else {
     jquery__WEBPACK_IMPORTED_MODULE_1___default()('.side-bar-random').removeClass('active');
   }
-});
+}); // minifyImg($(this).val(), width,height, 1200,fileType(name) ,(data)=> {
 
 var minifyImg = function minifyImg(dataUrl) {
   var newWidth = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
