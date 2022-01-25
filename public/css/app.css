@@ -546,9 +546,7 @@ input {
     color: var(--dark-color);
 }
 
-.side-bar-random-lable:last-child {
-    margin-left: 60px;
-}
+
 
 
 .side-bar-random-input {

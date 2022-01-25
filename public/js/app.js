@@ -1860,6 +1860,8 @@ __webpack_require__(/*! dropzone */ "./node_modules/dropzone/dist/dropzone.js");
 
 __webpack_require__(/*! ./custom.js */ "./resources/js/custom.js");
 
+__webpack_require__(/*! ./events.js */ "./resources/js/events.js");
+
 /***/ }),
 
 /***/ "./resources/js/bootstrap.js":
@@ -2370,7 +2372,11 @@ function localCompress(config) {
 
       if (config.size == 0) {
         minifyImg(val, width, height, null, fileType(name), function (data) {
-          uploadTiny(config).then(function (v) {});
+          dataToUpload.filedata = data; // console.log(dataToUpload);
+
+          uploadTiny(dataToUpload).then(function (v) {
+            console.log(v);
+          });
         }, quality);
       }
 
@@ -2389,7 +2395,9 @@ function localCompress(config) {
         width = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#width').val();
         height = jquery__WEBPACK_IMPORTED_MODULE_1___default()('#height').val();
         minifyImg(val, width, height, null, fileType(name), function (data) {
-          uploadTiny(config).then(function (v) {
+          dataToUpload.filedata = data; // console.log(dataToUpload);
+
+          uploadTiny(dataToUpload).then(function (v) {
             console.log(v);
           });
         }, quality);
@@ -2532,6 +2540,21 @@ var minifyImg = function minifyImg(dataUrl) {
     //
   });
 };
+
+/***/ }),
+
+/***/ "./resources/js/events.js":
+/*!********************************!*\
+  !*** ./resources/js/events.js ***!
+  \********************************/
+/***/ (() => {
+
+$('input[name=width]').keyup(function () {
+  $('input[name=height]').val('');
+});
+$('input[name=height]').keyup(function () {
+  $('input[name=width]').val('');
+});
 
 /***/ }),
 

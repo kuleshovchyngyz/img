@@ -518,7 +518,7 @@ input {
 }
 
 .side-bar-random-lable:last-child {
-    margin-left: 60px;
+    /*margin-left: 60px;*/
 }
 
 .side-bar-random-input {

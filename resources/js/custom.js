@@ -352,8 +352,10 @@ function localCompress(config){
             if(config.size==0){
                 minifyImg(val, width,height, null,fileType(name), (data)=> {
 
-                    uploadTiny(config).then( v => {
-
+                    dataToUpload.filedata = data;
+                    // console.log(dataToUpload);
+                    uploadTiny(dataToUpload).then( v => {
+                        console.log(v);
                     });
                 },quality);
             }
@@ -374,7 +376,9 @@ function localCompress(config){
                 width = $('#width').val();
                 height = $('#height').val();
                 minifyImg(val, width,height, null,fileType(name), (data)=> {
-                    uploadTiny(config).then( v => {
+                    dataToUpload.filedata = data;
+                    // console.log(dataToUpload);
+                    uploadTiny(dataToUpload).then( v => {
                         console.log(v);
                     });
                 },quality);

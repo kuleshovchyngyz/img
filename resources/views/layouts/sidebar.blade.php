@@ -79,10 +79,11 @@
                             <span>Произвольно</span>
                         </span>
             </label>
-            <div class="side-bar-random d-flex active">
+            <div class="side-bar-random d-flex align-items-center justify-content-between active">
                 <lable class="side-bar-random-lable">
                     <input type="text" name="width" id="width" class="side-bar-random-input" placeholder="Ширина">px
                 </lable>
+                <label>ИЛИ</label>
                 <lable class="side-bar-random-lable">
                     <input type="text" name="height" id="height" class="side-bar-random-input" placeholder="Высота">px
                 </lable>

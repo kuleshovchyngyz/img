@@ -38,7 +38,7 @@ class ProcessPodcast implements ShouldQueue
     public function compress($folder_name,$lossy,$size,$resize_width,$resize_height,$sub_folder_name)
     {
         \ShortPixel\ShortPixel::setOptions(array(
-            'resize' =>0,
+            'resize' =>3,
             "base_path" => public_path(),
         ));
 
@@ -46,7 +46,7 @@ class ProcessPodcast implements ShouldQueue
             $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy);
         }
         if($size==1){
-            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = 1200, $height = 1200, $maxDimension = true);
+            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = 1200, $height = 1200, $maxDimension = false);
         }
         if($size==3){
             $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = $resize_width, $height = $resize_height);
