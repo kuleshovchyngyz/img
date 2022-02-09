@@ -1,7 +1,7 @@
 
 import $ from "jquery";
 
-
+console.log(33333333333)
 function calcHeight() {
     let vh = $(".main__footer").outerHeight()
     vh += $(".main__top").outerHeight();
@@ -50,7 +50,7 @@ function fileType(filename){
 var myDropzone = new Dropzone("#dropzone", {
 
     maxFilesize: 10000,
-    autoProcessQueue: true,
+    
     parallelUploads:4,
     maxFiles: 50,
     thumbnailWidth: 350,
@@ -80,10 +80,10 @@ var myDropzone = new Dropzone("#dropzone", {
 
         stuff[file.upload.uuid] = response.changed_name;
 
-
-        console.log("total: "+myDropzone.files.length);
+        var count = myDropzone.files.length>50 ? 50 : myDropzone.files.length;
+        console.log("total: "+count);
         console.log("uploaded: "+response.number_of_images_uploaded);
-        if(response.number_of_images_uploaded == myDropzone.files.length){
+        if(response.number_of_images_uploaded == count){
             $('.start-upload').removeClass('disable');
         }
 
@@ -123,6 +123,7 @@ var myDropzone = new Dropzone("#dropzone", {
 
             })
             .fail(function (data) {
+               
 
             });
         count = myDropzone.files.length;
@@ -150,7 +151,39 @@ var myDropzone = new Dropzone("#dropzone", {
         $('.main__wrap-file').removeClass('dz-started');
         $('body').removeClass('mob-height');
         calcHeight();
-    }
+    },
+    error: function(file, message) {
+        console.log('===============')
+        file.status = Dropzone.ADDED;
+        myDropzone.enqueueFile(file);
+    //     var uuid = file.upload.uuid;
+    //     var folder_id = $("#folder_id").val();
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: 'dropzone-store',
+    //         data: {
+    //             _token: $('[name="_token"]').val(),
+    //             name: stuff[uuid],
+    //             folder_id:folder_id,
+    //             file: file
+    //         },
+    //         sucess: function (data) {
+
+    //             console.log('uploaded emergency')
+
+    //         }
+    //     })
+    //         .done(function (data) {
+    //             //
+
+
+    //         })
+    //         .fail(function (data) {
+    //            console.log('failed emergency uploading')
+    //            console.log(data)
+
+    //         });
+      }
 
 });
 
@@ -506,7 +539,7 @@ $('input[name="size"]').on('change', function () {
 })
 
 // minifyImg($(this).val(), width,height, 1200,fileType(name) ,(data)=> {
-var minifyImg = function(dataUrl,newWidth=null,newHeight=null,def,imageType="image/jpeg",resolve,imageArguments=0.85){
+var     minifyImg = function(dataUrl,newWidth=null,newHeight=null,def,imageType="image/jpeg",resolve,imageArguments=0.85){
     var image, oldWidth, oldHeight, newHeight, canvas, ctx, newDataUrl;
     (new Promise(function(resolve){
         image = new Image(); image.src = dataUrl;

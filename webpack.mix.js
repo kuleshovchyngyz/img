@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 
+mix.browserSync(process.env.MIX_SENTRY_DSN_PUBLIC);
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management

@@ -18,9 +18,15 @@ use App\Http\Controllers\AdminController;
 Auth::routes(['middleware' => 'role:admin','register' => true,'reset' => true]);
 //Auth::routes();
 
-Route::get('/home', function () {
-    \App\Models\User::find(3)->assignRole('admin');
-    return view('main');
+Route::get('/test', function () {
+    $filesInFolder = \File::files(public_path('shortpixel/61efc9605926d/0'));
+    foreach($filesInFolder as $path) {
+        $file = pathinfo($path);
+        dd(getimagesize($file['dirname'].'/'.$file['basename']));
+        // getimagesize();
+        
+    }
+    
 });
 
 Route::get('/', function () {

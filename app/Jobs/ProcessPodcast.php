@@ -32,12 +32,13 @@ class ProcessPodcast implements ShouldQueue
      */
     public function handle()
     {
-        $this->compress( $this->data['folder_name'],$this->data['lossy'],$this->data['size'],$this->data['resize_width'],$this->data['resize_height'],$this->data['subfolder']);
+        $filename = $this->data['filename'] ?? null;
+        $this->compress( $this->data['folder_name'],$this->data['lossy'],$this->data['size'],$this->data['resize_width'],$this->data['resize_height'],$this->data['subfolder'],$filename);
     }
 
-    public function compress($folder_name,$lossy,$size,$resize_width,$resize_height,$sub_folder_name)
+    public function compress($folder_name,$lossy,$size,$resize_width,$resize_height,$sub_folder_name,$filename)
     {
-        \ShortPixel\ShortPixel::setOptions(array(
+        \ShortPixel\ShortPixel::setOptions(array(   
             'resize' =>3,
             "base_path" => public_path(),
         ));
@@ -46,10 +47,13 @@ class ProcessPodcast implements ShouldQueue
             $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy);
         }
         if($size==1){
-            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = 1200, $height = 1200, $maxDimension = false);
+            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = 800, $height = 950, $maxDimension = true);
         }
         if($size==3){
-            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/', 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = $resize_width, $height = $resize_height);
+            // getimagesize
+            // $path = public_path().'shortpixel/'.$folder_name.'/'.$sub_folder_name.'/'.$filename;
+            // getimagesize()
+            $result =\LaravelShortPixel::fromFolder( 'shortpixel/'.$folder_name.'/'.$sub_folder_name, 'shortpixel/compressed/'.$folder_name, $compression_level = $lossy,$width = $resize_width, $height = $resize_height);
         }
 
 
@@ -65,30 +69,6 @@ class ProcessPodcast implements ShouldQueue
                 $i->save();
             }
         }
-
-
-//        $stop = false;
-//            while(!$stop) {
-//                //wait($this->countImages($folder_name)*10)->
-//                $ret = ShortPixel\fromFolder('shortpixel/'.$folder_name.'/'.$sub_folder_name)->toFiles('shortpixel/compressed/'.$folder_name);
-//                if(count($ret->failed) + count($ret->same) + count($ret->pending) == 0) {
-//                    $stop = true;
-//                    $p = Project::where ('folder',$folder_name)->get();
-//                    Project::find( $p[0]->id)->update([
-//                        'status'=>true
-//                    ]);
-//                    $x = Image::where('project_id',$p[0]->id)->where('new_size',null)->where('path',$folder_name.'/'.$sub_folder_name)->get();
-//                    foreach ($x as $i){
-//                        if(file_exists(public_path('shortpixel/compressed/'.$folder_name.'/'.$i->name))){
-//                            $i->new_size = $this->file_sizes('compressed/'.$folder_name,$i->name);
-//                            $i->save();
-//                        }
-//
-//                    }
-//                }
-//            }
-
-
     }
     public function file_sizes($folder, $filname)
     {

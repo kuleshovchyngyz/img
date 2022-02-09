@@ -118,13 +118,20 @@ class DropZoneController extends Controller
                 'date' => Carbon::now(),
                 'text' => $sub_folder_name
             ]);
-            ProcessPodcast::dispatch($data);
-//            $filesInFolder = \File::files(public_path('shortpixel/'.$folder_name.'/'. $sub_folder_name));
-//            foreach($filesInFolder as $path) {
-//                $file = pathinfo($path);
-//                $data['filename'] = $file['basename'];
-//                ProcessPodcast::dispatch($data);
-//            }
+            if($size ==3 ){
+                $filesInFolder = \File::files(public_path('shortpixel/'.$folder_name.'/'. $sub_folder_name));
+                foreach($filesInFolder as $path) {
+                    $file = pathinfo($path);
+                    $height = Image::make($file)->height();
+                    $width = Image::make($file)->width();
+                    $data['filename'] = $file['basename'];
+                    ProcessPodcast::dispatch($data);
+                }
+            }else{
+                ProcessPodcast::dispatch($data);
+            }
+            
+          
             $sub_folder_name++;
             if(!file_exists(public_path('shortpixel/'.$folder_name.'/'. $sub_folder_name))){
                 $folder_loop=false;
